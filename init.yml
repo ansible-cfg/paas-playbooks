@@ -1,0 +1,20 @@
+---
+- hosts: "{{host}}"
+  #  remote_user: zhuruiqing
+  become: true
+  gather_facts: yes
+  vars:
+    env: "{{env}}"
+  vars_prompt:
+    - name: 'user'
+      prompt: 'Enter Your User Name'
+      private: no
+    - name: 'pwd'
+      prompt: 'Enter Your Password'
+      private: yes
+      encrypt: "sha512_crypt"
+      confirm: yes
+      salt_size: 7
+  roles:
+    - init_server
+

@@ -1,0 +1,98 @@
+---
+#tasks file for init_server
+- name: 修改网卡
+  lineinfile: 
+    path: /etc/sysconfig/network-scripts/ifcfg-eth0
+    regexp: '^PEERDNS='
+    line: 'PEERDNS=no'
+
+- name: 修改dns 
+  copy:
+    src: resolv-{{ env }}.conf
+    dest: /etc/resolv.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: 安装yum-priorities ntp
+  yum: 
+    name: '{{item}}' 
+    state: present    
+  loop:
+    - ntp
+    - gcc
+    - libffi-devel
+    - python-devel
+    - openssl-devel
+    - unzip
+    - wget
+    - vim
+
+- name: 创建目录 data packages scripts
+  file: 
+    path: '/data/{{item}}'
+    state: directory
+    mode: 0755
+  loop:
+    - packages
+    - scripts  
+
+- debug: 
+    msg: '{{ user }} {{ pwd }}'
+
+- name: Create User
+  user: 
+    name: '{{ user }}'
+    password: '{{ pwd }}'
+
+- name: sudoers
+  blockinfile: 
+    path: /etc/sudoers
+    block: |
+      {{ user }} ALL=(ALL)    NOPASSWD:ALL
+    marker: "# {mark} ANSIBLE MANAGED BLOCK ADD USER {{user}}"
+
+- name: 下载安全客户端
+  get_url:
+    url: http://download.uhostsec.service.ucloud.cn:8090/ucloud-secagent-install.sh
+    dest: /data/scripts/ucloud-secagent-install.sh
+    timeout: 20 
+    mode: 0755
+
+- name: 安装测试安全客户端
+  shell: /bin/bash /data/scripts/ucloud-secagent-install.sh 2fb282c
+  when: env == 'test'
+
+- name: 安装生产安全客户端 
+  shell: /bin/bash /data/scripts/ucloud-secagent-install.sh 2fb4d8b
+  when: env == 'production'
+
+- name: 添加ssh key
+  shell: curl http://repo.paas.pub/packages/phops.sh|sudo sh >> phops.log
+  args:
+    chdir: /tmp/
+    creates: phops.log
+
+- name: 收集系统日志
+  shell: sed -i '1i *.* @p.graylog.pub.puhuifinance.com:5140;RSYSLOG_SyslogProtocol23Format' /etc/rsyslog.conf && service rsyslog restart
+
+- name: 修改sshd 端口
+  lineinfile: 
+    path: /etc/ssh/sshd_config
+    regexp: '{{item.key}}'
+    line: '{{item.value}}'
+  loop:
+    - { key: '#Port 22', value: 'Port 60000'} 
+    - { key: '#PermitRootLogin yes', value: 'PermitRootLogin no'}
+    - { key: '#PermitEmptyPasswords no', value: 'PermitEmptyPasswords no'}
+    - { key: '#UseDNS yes', value: 'UseDNS no'}
+    - { key: 'GSSAPIAuthentication yes', value: 'GSSAPIAuthentication no'}
+    - { key: '#ClientAliveInterval 0', value: 'ClientAliveInterval 60'}
+    - { key: '#ClientAliveCountMax 3', value: 'ClientAliveCountMax 10'}
+  notify:
+    - restart sshd
+     
+
+
+
+
