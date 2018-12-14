@@ -1,0 +1,39 @@
+---
+# tasks file for docker
+- name: Add repository
+  get_url:
+    url: https://download.docker.com/linux/centos/docker-ce.repo
+    dest: /etc/yum.repos.d/docker-ce.repo
+    mode: 0644
+
+- name: yum install
+  yum:
+    name: '{{ packages }}'
+    state: latest
+  vars:
+    packages:
+      - yum-utils
+      - device-mapper-persistent-data
+      - lvm2
+      - docker-ce
+
+- name: 创建docker 数据目录
+  file:
+    path: /data/docker-data
+    state: directory
+    mode: 0755
+
+- name:  修改 docker 路径
+  lineinfile:
+    path: /lib/systemd/system/docker.service
+    regexp: '^ExecStart='
+    line: 'ExecStart=/usr/bin/dockerd --graph=/data/docker-data'
+
+- name: force systemd to reread configs
+  systemd:
+    daemon_reload: yes
+
+- name: 启动docker
+  systemd:
+    name: docker
+    state: started
