@@ -1,0 +1,12 @@
+KUBELET_OPTS="--logtostderr=true \
+--v=4 \
+--address={{ NODE_ADDRESS }} \
+--hostname-override={{ NODE_ADDRESS }} \
+--kubeconfig=/data/kubernetes/cfg/kubelet.kubeconfig \
+--bootstrap-kubeconfig=/data/kubernetes/cfg/bootstrap.kubeconfig \
+--cert-dir=/data/kubernetes/ssl \
+--allow-privileged=true \
+--cluster-dns={{ DNS_SERVER_IP }} \
+--cluster-domain=cluster.local \
+--fail-swap-on=false \
+--pod-infra-container-image={{ infra_container_image }}"

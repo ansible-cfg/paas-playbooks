@@ -1,0 +1,9 @@
+---
+# tasks file for k8s
+- import_tasks: gen-ssl.yml
+- import_tasks: etcd.yml
+- import_tasks: flannel.yml
+- import_tasks: k8s-master.yml
+- import_tasks: k8s-node.yml
+
+

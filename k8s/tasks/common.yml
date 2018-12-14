@@ -1,0 +1,13 @@
+---
+- name: create ssl directory
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+    recurse: yes
+  loop:
+    - "{{ gen_ssl_path }}"
+    - /data/packages
+    - /data/kubernetes/bin
+    - /data/kubernetes/ssl
+    - /data/kubernetes/cfg

@@ -1,0 +1,92 @@
+---
+- import_tasks: common.yml
+  tags:
+    - flannel
+
+- name: copy server.pem server-key.pem ca.pem ca-key.pem to etcd nodes
+  copy:
+    src: ssl/{{item}}
+    dest: /data/kubernetes/ssl/{{item}}
+    mode: 0755
+  loop:
+    - server.pem
+    - server-key.pem
+    - ca.pem
+    - ca-key.pem
+  tags:
+    - flannel
+
+- name: copy flannel
+  get_url:
+    url: "{{ repo_address }}/flannel/{{ flannel_version }}/{{ item }}"
+    dest: /data/kubernetes/bin/{{ item }} 
+    mode: 0755
+    timeout: 120
+  loop:
+    - flanneld
+    - mk-docker-opts.sh
+  tags:
+    - flannel
+   
+- name: copy flanneld config
+  template: 
+    src: flanneld.j2
+    dest: /data/kubernetes/cfg/flanneld
+    mode: 0755 
+  tags:
+    - flannel
+    - flannel-zrq
+
+- name: copy flanneld docker service
+  copy:
+    src: "{{ item }}"
+    dest: "/usr/lib/systemd/system/{{ item }}" 
+    backup: yes
+    force: yes
+    mode: 0644 
+  loop:
+    - flanneld.service
+  tags:
+    - flannel
+    - flannel-zrq
+
+- name: modify docker.service add Enviromentfile
+  lineinfile:
+    dest: /usr/lib/systemd/system/docker.service
+    insertbefore: '^ExecStart'
+    line: 'EnvironmentFile=/run/flannel/subnet.env'
+  tags:
+    - flannel
+    - flannel-zrq
+
+- name: modify docker.service  
+  lineinfile:
+    dest: /usr/lib/systemd/system/docker.service
+    regexp: '^ExecStart'
+    line: 'ExecStart=/usr/bin/dockerd --graph=/data/docker-data $DOCKER_NETWORK_OPTIONS'
+  tags:
+    - flannel
+    - flannel-zrq
+
+- name: systemd reread configs
+  systemd:  
+    daemon_reload: yes
+  tags:
+    - flannel
+    - flannel-zrq
+
+- name: start flannel
+  systemd:
+    name: flanneld
+    state: started
+  tags:
+    - flannel
+    - flannel-zrq
+
+- name: restart docker
+  systemd:
+    name: docker
+    state: restarted
+  tags:
+    - flannel
+    - flannel-zrq
