@@ -26,8 +26,9 @@
 
 - name: download cfssl tools for Mac OS
   local_action: 
-    module: shell
-      brew install cfssl
+    module: homebrew
+    name: cfssl
+    state: present
   become: no
   run_once: true
   when: osname.stdout == "Darwin"
