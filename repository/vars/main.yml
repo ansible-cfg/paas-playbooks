@@ -1,0 +1,5 @@
+---
+# vars file for repository
+
+repository_path: /data/repository/
+repo_domain: repo.galaxy.test
