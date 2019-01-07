@@ -49,3 +49,9 @@
   pip:
     name: 
       - docker-compose
+- name: copy docker-compose
+  template:
+    src: "{{ item.key }}"
+    dest: "{{ item.value }}" 
+
+    dest: 
