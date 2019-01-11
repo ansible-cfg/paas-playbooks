@@ -3,3 +3,12 @@
 
 repository_path: /data/repository/
 repo_domain: repo.galaxy.test
+repo_dirs:
+  - name: kubernetes 
+    value: 
+      - v1.3.10 
+      - v1.3.12 
+  - name: etcd
+    value:
+      - v3.2.25
+      - v3.1.20

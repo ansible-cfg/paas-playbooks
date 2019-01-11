@@ -51,7 +51,25 @@
       - docker-compose
 - name: copy docker-compose
   template:
-    src: "{{ item.key }}"
+    src: "{{ item.name }}.j2"
     dest: "{{ item.value }}" 
+    mode: 0644
+  loop:
+    - { name:  "nginx.conf", value: "/data/scripts/repo-compose/config/nginx.conf" }
+    - { name:  "repo-compose", value: "/data/scripts/repo-compose/docker-compose.yml" }
+      #- name: create package dirs
+      #  file:
+      #    path: "" 
+      #    state: directory
+      #    mode: 0755
+      #    recurse: yes
+      #    
+- name: test
+  debug:
+    msg: "{{ item }}"
+  loop: "{{repo_dirs | flatten }}"
+  tags:
+    - test
 
-    dest: 
+
+
