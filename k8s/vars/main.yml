@@ -3,6 +3,8 @@
 repo_address: http://repo.galaxy.test
 # generate ssl key
 gen_ssl_path: /data/ssl
+project_config_path: /etc/kubernetes
+project_bin_path: /usr/local/bin
 
 # etcd vars
 etcd_cluster_data_dir: /data/etcd-data
