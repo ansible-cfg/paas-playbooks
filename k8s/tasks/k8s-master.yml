@@ -8,7 +8,7 @@
 - name: copy server.pem server-key.pem ca.pem ca-key.pem to etcd nodes
   copy:
     src: ssl/{{item}}
-    dest: /data/kubernetes/ssl/{{item}}
+    dest: "{{ project_config_path }}/ssl/{{item}}"
     mode: 0755
   loop:
     - server.pem
@@ -36,7 +36,7 @@
 - name: copy master file
   get_url: 
     url: "{{ repo_address }}/kubernetes/{{k8s_version}}/server/bin/{{item}}"
-    dest: /data/kubernetes/bin/{{item}}
+    dest: "{{ project_bin_path }}/{{item}}"
     mode: 0755
     timeout: 150
   loop:
@@ -54,7 +54,7 @@
   blockinfile:
     path: /etc/profile
     block: |
-      export PATH=/data/kubernetes/bin:$PATH
+      export PATH={{ project_bin_path }}:$PATH
     marker: "# {mark} ANSIBLE MANAGED BLOCK kubectl profile"
   when: ansible_ssh_host == KUBE_APISERVER
   tags:
@@ -65,7 +65,7 @@
 - name: copy bootstrapping token.csv 
   copy: 
     src: ssl/token.csv
-    dest: /data/kubernetes/cfg/token.csv 
+    dest: "{{ project_config_path }}/cfg/token.csv" 
     mode: 0644
   when: ansible_ssh_host == KUBE_APISERVER 
   tags:
@@ -74,7 +74,7 @@
 - name: gennerate kube-apiserver config
   template:
     src: "{{ item }}.j2"
-    dest: "/data/kubernetes/cfg/{{item}}"
+    dest: "{{ project_config_path }}/cfg/{{item}}"
     mode: 0644
   loop:
     - kube-apiserver
@@ -86,8 +86,8 @@
     - k8s-zrq
 
 - name: copy kube-apiserver.service
-  copy:
-    src: "{{item}}.service"
+  template:
+    src: "{{item}}.service.j2"
     dest: "/usr/lib/systemd/system/{{item}}.service"
     mode: 0755
   loop:
@@ -157,9 +157,9 @@
     - k8s-master-zrq
 
 - name:  开启bootstrapper认证
-  shell: "/data/kubernetes/bin/kubectl create clusterrolebinding kubelet-bootstrap --clusterrole=system:node-bootstrapper --user=kubelet-bootstrap"
+  shell: "{{ project_bin_path }}/kubectl create clusterrolebinding kubelet-bootstrap --clusterrole=system:node-bootstrapper --user=kubelet-bootstrap"
   args:
-    chdir: /data/kubernetes/bin     
+    chdir: "{{ project_bin_path }}"     
   when: ansible_ssh_host == KUBE_APISERVER
   tags:
     - k8s-master

@@ -39,8 +39,8 @@
     - zrq-j2
 
 - name: copy etcd service 
-  copy:
-    src: etcd.service
+  template:
+    src: etcd.service.j2
     dest: /usr/lib/systemd/system/etcd.service
     mode: 0755
   tags:
@@ -79,7 +79,7 @@
   blockinfile:
     path: /etc/profile
     block: |
-      export PATH=/data/kubernetes/bin:$PATH
+      export PATH={{ project_bin_path }}:$PATH
     marker: "# {mark} ANSIBLE MANAGED BLOCK ADD K8S AND ETCD  ENV"
   become: true  
   tags:
@@ -98,7 +98,7 @@
 - name: copy add network sh
   template:
     src: add_network_to_etcd.j2
-    dest: /data/kubernetes/bin/add_network_to_etcd.sh
+    dest: "{{ project_bin_path }}/add_network_to_etcd.sh"
     mode: 0755
   tags:
     - etcd
@@ -106,7 +106,7 @@
 - name: create network in etcd
   shell: /bin/bash add_network_to_etcd.sh
   args:
-    chdir: /data/kubernetes/bin
+    chdir: "{{ project_bin_path }}"
     executable: /bin/bash 
   run_once: true
   tags:

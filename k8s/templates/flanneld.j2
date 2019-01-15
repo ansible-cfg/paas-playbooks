@@ -1,4 +1,4 @@
 FLANNEL_OPTIONS="--etcd-endpoints={% for item in etcd_hosts %}https://{{ item.ip }}:2379{% if not loop.last %},{% endif %}{% endfor %} \
--etcd-cafile=/data/kubernetes/ssl/ca.pem \
--etcd-certfile=/data/kubernetes/ssl/server.pem \
--etcd-keyfile=/data/kubernetes/ssl/server-key.pem"
+-etcd-cafile={{ project_config_path }}/ssl/ca.pem \
+-etcd-certfile={{ project_config_path }}/ssl/server.pem \
+-etcd-keyfile={{ project_config_path }}/ssl/server-key.pem"

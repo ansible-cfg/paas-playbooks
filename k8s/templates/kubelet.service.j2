@@ -4,8 +4,8 @@ After=docker.service
 Requires=docker.service
 
 [Service]
-EnvironmentFile=-/data/kubernetes/cfg/kubelet
-ExecStart=/data/kubernetes/bin/kubelet $KUBELET_OPTS
+EnvironmentFile=-{{ project_config_path }}/cfg/kubelet
+ExecStart={{ project_bin_path }}/kubelet $KUBELET_OPTS
 Restart=on-failure
 KillMode=process
 

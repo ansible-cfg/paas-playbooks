@@ -7,7 +7,7 @@
 - name: copy kube-proxy-key.pem, kube-proxy.pem
   copy: 
     src: "ssl/{{item}}"
-    dest: "/data/kubernetes/ssl/{{ item }}"
+    dest: "{{ project_config_path }}/ssl/{{ item }}"
     mode: 0644
   loop:
     - kube-proxy-key.pem
@@ -19,7 +19,7 @@
 - name: copy bootstrap.kubeconfig and kube-proxy.kubeconfig
   copy:
     src: "ssl/{{ item }}"
-    dest: "/data/kubernetes/cfg/{{ item }}"
+    dest: "{{ project_config_path }}/cfg/{{ item }}"
     mode: 0644
   loop:
     - bootstrap.kubeconfig
@@ -31,7 +31,7 @@
 - name: copy kube-proxy kubelet to node      
   get_url:
     url: "{{ repo_address }}/kubernetes/{{k8s_version}}/server/bin/{{item}}"
-    dest: /data/kubernetes/bin/{{item}}
+    dest: "{{ project_bin_path }}/{{item}}"
     mode: 0755
   loop:
     - kubelet
@@ -43,7 +43,7 @@
 - name: copy node config
   template:
     src: "{{ item }}.j2"
-    dest: "/data/kubernetes/cfg/{{item}}"
+    dest: "{{ project_config_path }}/cfg/{{item}}"
     mode: 0644
   loop:
     - kubelet
@@ -53,8 +53,8 @@
     - k8s-node
 
 - name: copy node service
-  copy:
-    src: "{{item}}.service"
+  template:
+    src: "{{item}}.service.j2"
     dest: "/usr/lib/systemd/system/{{item}}.service"
     mode: 0755
   loop:
