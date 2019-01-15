@@ -54,7 +54,7 @@
 - name: copy etcd
   get_url:
     url: "{{ repo_address }}/etcd/{{ etcd_version }}/{{ item.name }}"
-    dest: "{{ project_config_path }}/bin/{{ item.value }}"
+    dest: "{{ project_bin_path }}/{{ item.value }}"
     mode: 0755
     timeout: 150
   loop:
@@ -89,7 +89,7 @@
   blockinfile: 
     path: /root/.bashrc
     block: | 
-      alias etcdctl='etcdctl --ca-file=/data/kubernetes/ssl/ca.pem --key-file=/data/kubernetes/ssl/server-key.pem --cert-file=/data/kubernetes/ssl/server.pem'
+      alias etcdctl='etcdctl --ca-file={{ project_config_path }}/ssl/ca.pem --key-file={{ project_config_path }}/ssl/server-key.pem --cert-file={{ project_config_path }}/ssl/server.pem'
     marker: "#add etcdctl to bashrc"
   tags:
     - etcd
