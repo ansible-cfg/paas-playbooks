@@ -6,8 +6,8 @@ Wants=network-online.target
 
 [Service]
 Type=notify
-EnvironmentFile=/data/kubernetes/cfg/etcd
-ExecStart=/data/kubernetes/bin/etcd \
+EnvironmentFile={{ project_config_path }}/cfg/etcd
+ExecStart={{ project_bin_path }}/etcd \
 --name=${ETCD_NAME} \
 --data-dir=${ETCD_DATA_DIR} \
 --listen-peer-urls=${ETCD_LISTEN_PEER_URLS} \
@@ -17,12 +17,12 @@ ExecStart=/data/kubernetes/bin/etcd \
 --initial-cluster=${ETCD_INITIAL_CLUSTER} \
 --initial-cluster-token=${ETCD_INITIAL_CLUSTER} \
 --initial-cluster-state=new \
---cert-file=/data/kubernetes/ssl/server.pem \
---key-file=/data/kubernetes/ssl/server-key.pem \
---peer-cert-file=/data/kubernetes/ssl/server.pem \
---peer-key-file=/data/kubernetes/ssl/server-key.pem \
---trusted-ca-file=/data/kubernetes/ssl/ca.pem \
---peer-trusted-ca-file=/data/kubernetes/ssl/ca.pem
+--cert-file={{ project_config_path }}/ssl/server.pem \
+--key-file={{ project_config_path }}/ssl/server-key.pem \
+--peer-cert-file={{ project_config_path }}/ssl/server.pem \
+--peer-key-file={{ project_config_path }}/ssl/server-key.pem \
+--trusted-ca-file={{ project_config_path }}/ssl/ca.pem \
+--peer-trusted-ca-file={{ project_config_path }}/ssl/ca.pem
 Restart=on-failure
 LimitNOFILE=65536
 

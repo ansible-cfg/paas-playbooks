@@ -6,7 +6,7 @@
 - name: copy server.pem server-key.pem ca.pem ca-key.pem to etcd nodes
   copy:
     src: ssl/{{item}}
-    dest: /data/kubernetes/ssl/{{item}}
+    dest: "{{ project_config_path }}/ssl/{{item}}"
     mode: 0755
   loop:
     - server.pem
@@ -19,7 +19,7 @@
 - name: copy flannel
   get_url:
     url: "{{ repo_address }}/flannel/{{ flannel_version }}/{{ item }}"
-    dest: /data/kubernetes/bin/{{ item }} 
+    dest: "{{ project_bin_path }}/{{ item }}" 
     mode: 0755
     timeout: 120
   loop:
@@ -31,21 +31,17 @@
 - name: copy flanneld config
   template: 
     src: flanneld.j2
-    dest: /data/kubernetes/cfg/flanneld
+    dest: "{{ project_config_path }}/cfg/flanneld"
     mode: 0755 
   tags:
     - flannel
     - flannel-zrq
 
 - name: copy flanneld docker service
-  copy:
-    src: "{{ item }}"
-    dest: "/usr/lib/systemd/system/{{ item }}" 
-    backup: yes
-    force: yes
+  template:
+    src: flanneld.service.j2
+    dest: "/usr/lib/systemd/system/flanneld.service" 
     mode: 0644 
-  loop:
-    - flanneld.service
   tags:
     - flannel
     - flannel-zrq

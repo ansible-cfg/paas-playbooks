@@ -1,0 +1,23 @@
+---
+# vars file for repository
+
+repository_path: /data/repository/
+repo_domain: repo.galaxy.test
+repo_dirs:
+  - name: kubernetes 
+    versions: 
+    - version_num: v1.13.0 
+      url: https://dl.k8s.io/v1.13.0/kubernetes-server-linux-amd64.tar.gz 
+
+    - version_num: v1.13.2 
+      url: https://dl.k8s.io/v1.13.2/kubernetes-server-linux-amd64.tar.gz 
+
+  - name: etcd
+    versions:
+    - version_num: v3.3.11
+      url: https://github.com/etcd-io/etcd/releases/download/v3.3.11/etcd-v3.3.11-linux-amd64.tar.gz 
+
+  - name: flannel 
+    versions:
+    - version_num: v0.10.0
+      url: https://github.com/coreos/flannel/releases/download/v0.10.0/flannel-v0.10.0-linux-amd64.tar.gz

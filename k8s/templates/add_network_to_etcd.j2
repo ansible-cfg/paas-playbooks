@@ -1,5 +1,5 @@
-/data/kubernetes/bin/etcdctl --ca-file=/data/kubernetes/ssl/ca.pem \
---key-file=/data/kubernetes/ssl/server-key.pem \
---cert-file=/data/kubernetes/ssl/server.pem \
+{{ project_bin_path }}/etcdctl --ca-file={{ project_config_path }}/ssl/ca.pem \
+--key-file={{ project_config_path }}/ssl/server-key.pem \
+--cert-file={{ project_config_path }}/ssl/server.pem \
 set /coreos.com/network/config '{"network":"{{ network }}", "Backend":{"Type":"vxlan"}}'
 

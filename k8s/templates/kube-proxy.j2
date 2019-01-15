@@ -1,4 +1,4 @@
 KUBE_PROXY_OPTS="--logtostderr=true \
 --v=4 \
 --hostname-override={{ NODE_ADDRESS }} \
---kubeconfig=/data/kubernetes/cfg/kube-proxy.kubeconfig"
+--kubeconfig={{ project_config_path }}/cfg/kube-proxy.kubeconfig"

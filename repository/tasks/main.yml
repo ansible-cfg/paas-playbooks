@@ -1,0 +1,101 @@
+---
+# tasks file for repository
+- name: Add repository
+  get_url:
+    url: https://download.docker.com/linux/centos/docker-ce.repo
+    dest: /etc/yum.repos.d/docker-ce.repo
+    mode: 0644
+
+- name: yum install
+  yum:
+    name: '{{ packages }}'
+    state: latest
+  vars:
+    packages:
+      - yum-utils
+      - device-mapper-persistent-data
+      - epel-release
+      - python-pip
+      - lvm2
+      - docker-ce
+
+- name: 创建docker 数据目录
+  file:
+    path: "/data/{{ item }}"
+    state: directory
+    mode: 0755
+    recurse: yes
+  loop:
+    - docker-data
+    - scripts/repo-compose/config
+    - scripts/repo-compose/logs
+
+- name:  修改 docker 路径
+  lineinfile:
+    path: /lib/systemd/system/docker.service
+    regexp: '^ExecStart='
+    line: 'ExecStart=/usr/bin/dockerd --graph=/data/docker-data'
+
+- name: force systemd to reread configs
+  systemd:
+    daemon_reload: yes
+
+- name: 启动docker
+  systemd:
+    name: docker
+    state: started
+
+- name: docker-compose
+  pip:
+    name: 
+      - docker-compose
+- name: copy docker-compose
+  template:
+    src: "{{ item.name }}.j2"
+    dest: "{{ item.value }}" 
+    mode: 0644
+  loop:
+    - { name:  "nginx.conf", value: "/data/scripts/repo-compose/config/nginx.conf" }
+    - { name:  "repo-compose", value: "/data/scripts/repo-compose/docker-compose.yml" }
+- name: start repo server
+  shell: docker-compose up -d
+  args:
+    chdir: /data/scripts/repo-compose 
+- name: create package dirs
+  file:
+    path: "{{ repository_path }}/{{ item.0.name }}/{{ item.1.version_num }}" 
+    state: directory
+    mode: 0755
+    recurse: yes
+  with_subelements:
+    - "{{ repo_dirs}}"
+    - versions
+  tags:
+    - download
+    
+      #- name: get packages
+      #  unarchive:
+      #    src: "{{ item.1.url}}"        
+      #    dest: "{{ repository_path }}/{{ item.0.name }}/{{ item.1.version_num }}"
+      #    remote_src: yes
+      #    extra_opts: [--strip-components=1]
+      #  with_subelements:
+      #    - "{{ repo_dirs }}"
+      #    - versions  
+      #
+      #  tags:
+      #    - download
+      #
+      
+    
+- name: test
+  debug:
+    msg: "{{ repository_path }}/{{ item.0.name }}/{{ item.1.version_num }}"
+  with_subelements: 
+    - "{{ repo_dirs }}"
+    - versions
+  tags:
+    - test
+
+
+

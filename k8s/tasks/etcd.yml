@@ -17,8 +17,8 @@
 
 - name: copy server.pem server-key.pem ca.pem ca-key.pem to etcd nodes  
   copy:
-    src: ssl/{{item}}
-    dest: /data/kubernetes/ssl/{{item}}
+    src: ssl/{{ item }}
+    dest: "{{ project_config_path }}/ssl/{{ item }}"
     mode: 0755
   loop:
     - server.pem
@@ -32,19 +32,17 @@
 - name: copy etcd config
   template:
     src: etcd.j2
-    dest: /data/kubernetes/cfg/etcd 
+    dest: "{{ project_config_path }}/cfg/etcd"
     mode: 0644
-    #when: etcd_list[inventory_hostname] | default ('False') in etcd_list.values() | list
   tags:
     - etcd
     - zrq-j2
 
 - name: copy etcd service 
-  copy:
-    src: etcd.service
+  template:
+    src: etcd.service.j2
     dest: /usr/lib/systemd/system/etcd.service
     mode: 0755
-    #when: etcd_list[inventory_hostname] | default ('False') in etcd_list.values() | list
   tags:
     - etcd
 
@@ -56,7 +54,7 @@
 - name: copy etcd
   get_url:
     url: "{{ repo_address }}/etcd/{{ etcd_version }}/{{ item.name }}"
-    dest: /data/kubernetes/bin/{{ item.value }}
+    dest: "{{ project_bin_path }}/{{ item.value }}"
     mode: 0755
     timeout: 150
   loop:
@@ -81,7 +79,7 @@
   blockinfile:
     path: /etc/profile
     block: |
-      export PATH=/data/kubernetes/bin:$PATH
+      export PATH={{ project_bin_path }}:$PATH
     marker: "# {mark} ANSIBLE MANAGED BLOCK ADD K8S AND ETCD  ENV"
   become: true  
   tags:
@@ -91,7 +89,7 @@
   blockinfile: 
     path: /root/.bashrc
     block: | 
-      alias etcdctl='etcdctl --ca-file=/data/kubernetes/ssl/ca.pem --key-file=/data/kubernetes/ssl/server-key.pem --cert-file=/data/kubernetes/ssl/server.pem'
+      alias etcdctl='etcdctl --ca-file={{ project_config_path }}/ssl/ca.pem --key-file={{ project_config_path }}/ssl/server-key.pem --cert-file={{ project_config_path }}/ssl/server.pem'
     marker: "#add etcdctl to bashrc"
   tags:
     - etcd
@@ -100,7 +98,7 @@
 - name: copy add network sh
   template:
     src: add_network_to_etcd.j2
-    dest: /data/kubernetes/bin/add_network_to_etcd.sh
+    dest: "{{ project_bin_path }}/add_network_to_etcd.sh"
     mode: 0755
   tags:
     - etcd
@@ -108,7 +106,7 @@
 - name: create network in etcd
   shell: /bin/bash add_network_to_etcd.sh
   args:
-    chdir: /data/kubernetes/bin
+    chdir: "{{ project_bin_path }}"
     executable: /bin/bash 
   run_once: true
   tags:
