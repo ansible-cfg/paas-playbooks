@@ -144,7 +144,7 @@ ansible-playbook -i k8s.yaml -e 'host=etcd' -u user -become --tags 'etcd' -v
 
 # 第三步 安装 k8s-master
 ```python
-ansible-playbook -i k8s.yaml -e 'host=k8s' -u user -become --tags 'etcd' -v
+ansible-playbook -i k8s.yaml -e 'host=k8s' -u user -become --tags 'k8s-master' -v
 ```
 
 # 第四步 安装flannel
