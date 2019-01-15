@@ -19,7 +19,7 @@
 - name: copy flannel
   get_url:
     url: "{{ repo_address }}/flannel/{{ flannel_version }}/{{ item }}"
-    dest: "{{ project_bin_path }}/{ item }}" 
+    dest: "{{ project_bin_path }}/{{ item }}" 
     mode: 0755
     timeout: 120
   loop:
@@ -40,7 +40,7 @@
 - name: copy flanneld docker service
   template:
     src: flanneld.service.j2
-    dest: "/usr/lib/systemd/system/{{ item }}" 
+    dest: "/usr/lib/systemd/system/flanneld.service" 
     mode: 0644 
   tags:
     - flannel
