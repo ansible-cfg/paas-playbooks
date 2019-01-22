@@ -1,0 +1,8 @@
+---
+- hosts: "{{host}}"
+  become: true
+  gather_facts: true
+  roles:
+    - docker
+  environment:
+    PATH: /usr/local/bin:{{ ansible_env.PATH }}
