@@ -5,5 +5,6 @@
 - import_tasks: flannel.yml
 - import_tasks: k8s-master.yml
 - import_tasks: k8s-node.yml
+- import_tasks: add-user.yml
 
 

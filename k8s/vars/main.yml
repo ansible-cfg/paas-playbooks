@@ -30,3 +30,6 @@ k8s_version: v1.13.0
 flannel_version: v0.10.0
 
 infra_container_image: registry.cn-hangzhou.aliyuncs.com/google-containers/pause-amd64:3.0 
+# add user kubeconfig
+username: "{{ username }}"
+namespace: ""

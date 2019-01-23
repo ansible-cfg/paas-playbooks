@@ -1,0 +1,60 @@
+---
+- name: gennerate user-csr.json 
+  local_action:
+    module: template
+    src: add-user-csr.j2
+    dest: "{{ role_path }}/files/ssl/{{ username }}-csr.json" 
+    mode: 0644
+  become: no
+  run_once: true
+  tags:
+    - adduser 
+
+- name: gennerate keys     
+  shell: "{{ item.value }} >> {{ item.name }}.log" 
+  args: 
+    chdir: "{{ role_path }}/files/ssl/"
+    creates: "{{ item.name }}.log"
+  loop:
+    - { name: "{{ username }}", value: "cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes {{ username }}-csr.json | cfssljson -bare {{ username }}" }
+  environment:
+    PATH: /usr/local/bin:{{ ansible_env.PATH }}
+  become: no
+  run_once: true
+  connection: local
+  tags:
+    - adduser
+
+- name: copy add-user.kubeconfig.sh
+  template:
+    src: add-user.kubeconfig.j2
+    dest: "{{ gen_ssl_path}}/{{ username }}.kubeconfig.sh"
+    mode: 0755
+  when: ansible_ssh_host == KUBE_APISERVER
+  tags:
+    - adduser
+    - adduser-config 
+
+- name: gennerate username.kubeconfig
+  shell: "{{ item }}"
+  args:
+    chdir: "{{ gen_ssl_path }}"
+    executable: /bin/bash
+  loop:
+    - "sh {{ username }}.kubeconfig.sh >> {{ username }}.kubeconfig.log "
+  when: ansible_ssh_host == KUBE_APISERVER
+  tags:
+    - adduser
+    - adduser-config
+
+- name: fetch username.kubeconfig  k8s playbook files
+  fetch:
+    src: "{{ gen_ssl_path }}/{{ item }}"
+    dest: k8s/files/ssl/{{ item }}
+    flat: yes
+  loop:
+    - "{{ username }}.kubeconfig"
+  when: ansible_ssh_host == KUBE_APISERVER
+  tags:
+    - adduser
+    - adduser-config
