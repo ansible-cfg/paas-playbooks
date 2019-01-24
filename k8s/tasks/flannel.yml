@@ -45,6 +45,14 @@
   tags:
     - flannel
     - flannel-zrq
+- name: copy docker daemon.json
+  template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json 
+    mode: 0644 
+  tags:
+    - flannel
+    - flannel-zrq
 
 - name: modify docker.service add Enviromentfile
   lineinfile:

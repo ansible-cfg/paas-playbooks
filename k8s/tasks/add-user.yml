@@ -25,6 +25,7 @@
   tags:
     - adduser
 
+
 - name: copy add-user.kubeconfig.sh
   template:
     src: add-user.kubeconfig.j2
@@ -34,6 +35,21 @@
   tags:
     - adduser
     - adduser-config 
+
+- name: copy ca-key.pem ca.pem ca-config.json add-user-csr.json
+  copy:
+    src: ssl/{{ item }}
+    dest: "{{ gen_ssl_path }}/{{ item }}"
+    mode: 0644
+  when: ansible_ssh_host == KUBE_APISERVER
+  loop:
+    - "{{ username }}.pem"
+    - "{{ username }}-key.pem"
+    - ca.pem
+    - "{{ username }}-csr.json"
+  tags:
+    - adduser
+    - adduser-config
 
 - name: gennerate username.kubeconfig
   shell: "{{ item }}"
