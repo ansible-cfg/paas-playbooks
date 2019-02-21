@@ -1,0 +1,8 @@
+---
+- hosts: "{{host}}"
+  #  remote_user: zhuruiqing
+  become: true
+  gather_facts: yes
+  roles:
+    - docker
+
