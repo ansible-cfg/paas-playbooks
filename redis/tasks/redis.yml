@@ -80,7 +80,7 @@
   vars:
     redis_port: "{{ item }}"
   loop: "{{ redis_port | default ([]) }}"
-  tag:
+  tags:
     - redis
   
 
