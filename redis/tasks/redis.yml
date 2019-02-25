@@ -3,6 +3,7 @@
   unarchive:
     src: "{{ repo_address }}/redis/{{ item.name }}/{{ item.version }}/{{ item.pkg}}"
     dest: /data/packages
+    remote_src: yes
   loop:
     - {'name': 'redis', 'version': redis_version, 'pkg': redis.tar.gz }
     - {'name': 'ruby', 'version': ruby_version, 'pkg': ruby.tar.gz}
