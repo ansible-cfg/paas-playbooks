@@ -32,7 +32,7 @@
 
 - name: create redis config directory
   file:
-    path: "{{ redis_config_path[redis_type] }}{{ item }}"
+    path: "{{ redis_root_path }}/{{ redis_config_path[redis_type] }}/{{ item }}"
     state: directory
     mode: 0755
     recurse: yes
@@ -41,7 +41,7 @@
 
 - name: create redis data directory
   file:
-    path: "/data/redis/redisdata/{{ item }}"
+    path: "{{ redis_root_path }}/redisdata/{{ item }}"
     state: directory
     mode: 0755
     recurse: yes
