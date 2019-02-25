@@ -13,7 +13,7 @@
     chdir: /data/packages/redis-{{ redis_version }}
     target: install
     params:
-      PREFIX: {{ redis_root_path }}
+      PREFIX: "{{ redis_root_path }}"
 
 - name: 拷贝/data/packages/redis-version/src/redis-trib.rb 文件
   copy:
