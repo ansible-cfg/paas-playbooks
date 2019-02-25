@@ -16,7 +16,7 @@
 - name: 拷贝/data/packages/redis-3.2.11/src/redis-trib.rb 文件
   copy:
     src: /data/packages/redis-{{ redis_version }}/src/redis-trib.rb
-    dest: {{ redis_root_path }}/bin/redis-trib.rb
+    dest: "{{ redis_root_path }}/bin/redis-trib.rb"
     remote_src: yes
     mode: 0755
 
