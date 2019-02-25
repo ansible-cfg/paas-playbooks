@@ -36,7 +36,7 @@
     state: directory
     mode: 0755
     recurse: yes
-  loop: "{{ redis_port|default ([]) }}"
+  loop: "{{ cluster_port |default ([]) }}"
 
 
 - name: create redis data directory
@@ -45,5 +45,5 @@
     state: directory
     mode: 0755
     recurse: yes
-  loop: "{{ redis_port |default ([]) }}"
+  loop: "{{ cluster_port |default ([]) }}"
   when: redis_type == 'cluster'

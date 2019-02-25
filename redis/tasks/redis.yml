@@ -52,7 +52,7 @@
     mode: 0644
   vars:
     redis_port: "{{ item }}"
-  loop: "{{ redis_port | default ([]) }}"
+  loop: "{{ cluster_port | default ([]) }}"
 
 - name: 查看gem路径
   shell: /usr/local/bin/gem environment gemdir
@@ -86,7 +86,7 @@
 
 - name: 启动redis
   shell: "{{ redis_root_path }}/bin/redis-server {{ redis_root_path }}/{{ redis_config_path[redis_type] }}/{{item}}/redis.conf"
-  loop: "{{redis_port | default ([])}}"
+  loop: "{{cluster_port | default ([])}}"
 
   #- name: test
   #  debug:
