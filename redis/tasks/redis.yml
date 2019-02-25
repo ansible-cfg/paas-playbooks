@@ -25,7 +25,7 @@
 - name: 编译安装ruby
   make:
     chdir: /data/packages/ruby-{{ ruby_version }}
-    target: install
+    target: all
   when: redis_type == 'cluster'
 
 - name: 添加环境变量
