@@ -9,12 +9,13 @@
     - {'name': ruby, 'version': '{{ ruby_version }}', 'pkg': ruby.tar.gz}
 
 - name: 编译安装redis
-  shell:  make && make PREFIX={{ redis_root_path }} install
-  args:
+  make:  
     chdir: /data/packages/redis-{{ redis_version }}
+    target: install
+    params:
+      PREFIX: {{ redis_root_path }}
 
-
-- name: 拷贝/data/packages/redis-3.2.11/src/redis-trib.rb 文件
+- name: 拷贝/data/packages/redis-version/src/redis-trib.rb 文件
   copy:
     src: /data/packages/redis-{{ redis_version }}/src/redis-trib.rb
     dest: "{{ redis_root_path }}/bin/redis-trib.rb"
@@ -42,7 +43,7 @@
 - name: 生成redis 配置文件
   template:
     src: redis-{{ redis_type }}.j2
-    dest: "{{ redis_config_path[redis_type] }}{{ item }}/redis.conf"
+    dest: "{{ redis_root_path }}/{{ redis_config_path[redis_type] }}/{{ item }}/redis.conf"
     mode: 0644
   vars:
     redis_port: "{{ item }}"
