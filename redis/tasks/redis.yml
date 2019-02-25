@@ -1,7 +1,7 @@
 ---
 - name: 拷贝redis安装包并解压
   unarchive:
-    src: "{{ repo_address }}/redis/{{ item.name }}/{{ item.version }}/{{ item.pkg}}"
+    src: "{{ repo_address }}/{{ item.name }}/{{ item.version }}/{{ item.pkg}}"
     dest: /data/packages
     remote_src: yes
   loop:
