@@ -37,7 +37,7 @@
   blockinfile:
     path: /etc/profile
     block: |
-      export PATH={{ redis_root_path }}/bin:$PATH
+      export PATH={{ redis_root_path }}/bin:/usr/local/bin:$PATH
     marker: "# {mark} ANSIBLE MANAGED BLOCK ADD REDIS ENV"
   become: true
 
