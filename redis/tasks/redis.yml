@@ -41,7 +41,7 @@
     marker: "# {mark} ANSIBLE MANAGED BLOCK ADD REDIS ENV"
   become: true
 
-- templatename: gem install redis
+- name: gem install redis
   shell: /usr/local/bin/gem install redis
   when: redis_type == 'cluster'
 
