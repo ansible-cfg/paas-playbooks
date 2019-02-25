@@ -5,8 +5,8 @@
     dest: /data/packages
     remote_src: yes
   loop:
-    - {'name': 'redis', 'version': redis_version, 'pkg': redis.tar.gz }
-    - {'name': 'ruby', 'version': ruby_version, 'pkg': ruby.tar.gz}
+    - {'name': 'redis', 'version': {{ redis_version }}, 'pkg': redis.tar.gz }
+    - {'name': 'ruby', 'version': {{ ruby_version }}, 'pkg': ruby.tar.gz}
 
 - name: 编译安装redis
   shell:  make && make PREFIX={{ redis_root_path }} install
