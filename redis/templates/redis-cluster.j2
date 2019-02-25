@@ -1,0 +1,18 @@
+bind 0.0.0.0
+port {{ redis_port }} 
+cluster-enabled yes
+cluster-config-file "nodes.conf"
+cluster-node-timeout 18000
+appendonly no
+appendfilename "{{ redis_port }}.aof"
+auto-aof-rewrite-percentage 100
+auto-aof-rewrite-min-size 64mb
+appendfsync everysec
+maxmemory {{maxmemory}}gb
+cluster-require-full-coverage no
+maxmemory-policy volatile-lru
+daemonize yes
+logfile "{{ redis_root_path }}/redis-cluster/{{ redis_port }}/redis.log"
+dir "{{ redis_root_path }}/redis/redisdata/{{ redis_port }}"
+requirepass "{{redis_password}}"
+masterauth  "{{redis_password}}"
