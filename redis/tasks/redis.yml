@@ -52,7 +52,7 @@
   register: result
   when: redis_type == 'cluster'
 
- - name: ruby redis 版本
+- name: ruby redis 版本
   shell: /usr/local/bin/gem list  |grep redis | awk '{print $2}' |sed 's/(//'|sed 's/)//'
   register: ruby_redis
 
