@@ -85,7 +85,7 @@
   #  
 
 - name: 启动redis
-  shell: "{{ redis_root_path }}"/bin/redis-server "{{ redis_root_path }}/{{ redis_config_path[redis_type] }}/{{item}}/redis.conf"
+  shell: "{{ redis_root_path }}/bin/redis-server {{ redis_root_path }}/{{ redis_config_path[redis_type] }}/{{item}}/redis.conf"
   loop: "{{cluster_port | default ([])}}"
 
   #- name: DEBUG ruby redis库 路径
