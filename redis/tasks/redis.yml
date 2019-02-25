@@ -73,7 +73,15 @@
     line: '      :password => "{{redis_password}}", '
   when: redis_type == 'cluster'
 
-
+- name: generat redis.service
+  template:
+    src: redis.service.j2
+    dest: "/usr/lib/systemd/system/redis-server-{{ item }}.service" 
+  vars:
+    redis_port: "{{ item }}"      
+  loop: "{{ redis_port | default ([]) }}"
+  tag: 
+    - redis
   #- name: 启动redis
   #  shell: /data/redis/bin/redis-server "{{ redis_config_path[redis_type] }}{{item}}/redis.conf"
   #  with_items: "{{cluster_port | default ([])}}"
