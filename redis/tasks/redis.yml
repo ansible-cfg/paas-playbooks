@@ -41,7 +41,7 @@
     marker: "# {mark} ANSIBLE MANAGED BLOCK ADD REDIS ENV"
   become: true
 
-- name: gem install redis
+- templatename: gem install redis
   shell: /usr/local/bin/gem install redis
   when: redis_type == 'cluster'
 
@@ -73,8 +73,7 @@
     line: '      :password => "{{redis_password}}", '
   when: redis_type == 'cluster'
 
-
-- name: generat redis.service
+- name:  generate redis service
   template:
     src: redis.service.j2
     dest: "/usr/lib/systemd/system/redis-server-{{ item }}.service"
@@ -83,6 +82,8 @@
   loop: "{{ redis_port | default ([]) }}"
   tag:
     - redis
+  
+
   #- name: 启动redis
   #  shell: /data/redis/bin/redis-server "{{ redis_config_path[redis_type] }}{{item}}/redis.conf"
   #  with_items: "{{cluster_port | default ([])}}"
