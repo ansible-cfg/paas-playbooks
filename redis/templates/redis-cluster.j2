@@ -13,6 +13,6 @@ cluster-require-full-coverage no
 maxmemory-policy volatile-lru
 daemonize yes
 logfile "{{ redis_root_path }}/redis-cluster/{{ redis_port }}/redis.log"
-dir "{{ redis_root_path }}/redis/redisdata/{{ redis_port }}"
+dir "{{ redis_root_path }}/redisdata/{{ redis_port }}"
 requirepass "{{redis_password}}"
 masterauth  "{{redis_password}}"
