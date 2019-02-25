@@ -88,6 +88,11 @@
   shell: "{{ redis_root_path }}/bin/redis-server {{ redis_root_path }}/{{ redis_config_path[redis_type] }}/{{item}}/redis.conf"
   loop: "{{redis_port | default ([])}}"
 
+  #- name: test
+  #  debug:
+  #    msg: "/data/redis/bin/redis-trib.rb create --replicas 1 {{ips_li | join('')}}"
+  #  when: inventory_hostname == "{{ groups['all'][0] }}"
+  #  tags: create-cluster
   #- name: DEBUG ruby redis库 路径
   #  debug:
   #    msg: "{{result.stdout}}/gems/redis-{{ruby_redis.stdout}}/lib/redis"
