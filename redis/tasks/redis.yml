@@ -23,9 +23,9 @@
     mode: 0755
 
 - name: 编译安装ruby
-  shell: ./configure && make && make install
-  args:
+  make:
     chdir: /data/packages/ruby-{{ ruby_version }}
+    target: install
   when: redis_type == 'cluster'
 
 - name: 添加环境变量
