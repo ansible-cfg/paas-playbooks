@@ -1,5 +1,5 @@
-{% for item in zk_servers %}
-{% if item.ip == ansible_ssh_host %}
-{{ item.myid }}
+{% for key, value in zk_servers.items() %}
+{% if value.ip == ansible_ssh_host %}
+{{ value.id }}
 {% endif %}
 {% endfor %}

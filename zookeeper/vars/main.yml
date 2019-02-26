@@ -7,12 +7,12 @@ zk_version: 3.4.13
 zk_servers:
   server1: 
     ip: 10.19.132.192
-    myid: 1
+    id: 1
   server2: 
     ip: 10.19.132.192
-    myid: 2
+    id: 2
   server3: 
     ip: 10.19.122.164
-    myid: 3
+    id: 3
 
   
