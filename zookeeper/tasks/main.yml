@@ -22,7 +22,7 @@
     block: |
       export ZOOKEEPER_HOME={{ zk_root_path }}/zookeeper-{{ zk_version}}
       export PATH=$ZOOKEEPER_HOME/bin:$PATH
-    marker: "# {mark} ANSIBLE MANAGED BLOCK jdk profile"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK zookeeper profile"
   become: true
 - name: source profile
   shell: source /etc/profile
