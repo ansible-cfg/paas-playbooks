@@ -39,3 +39,8 @@
     dest: "{{ zk_root_path }}/data/myid"
     mode: 0644
 
+- name: start zk
+  shell: ./zkServer.sh start
+  args:
+    chdir: "{{ zk_root_path }}/zookeeper-{{ zk_version}}/bin/"
+
