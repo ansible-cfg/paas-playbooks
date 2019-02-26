@@ -27,4 +27,15 @@
 - name: source profile
   shell: source /etc/profile
 
-    
+- name: copy config file
+  template:
+    src: zoo.cfg.j2
+    dest: "{{ zk_root_path }}/zookeeper-{{ zk_version}}/conf/zoo.cfg"
+    mode: 0644
+
+- name: copy myid
+  template:
+    src: myid.j2
+    dest: "{{ zk_root_path }}/data/myid"
+    mode: 0644
+

@@ -1,0 +1,4 @@
+{% for item in zk_servers %}
+{% if item.ip == ansible_ssh_host %}
+{{item.myid}}
+{% endfor %}
