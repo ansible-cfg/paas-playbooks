@@ -3,6 +3,7 @@
   become: true
   gather_facts: true
   roles:
+    - jdk
     - zookeeper
   environment:
     PATH: /usr/local/bin:{{ ansible_env.PATH }}
