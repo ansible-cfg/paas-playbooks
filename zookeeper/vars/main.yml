@@ -1,0 +1,4 @@
+---
+# vars file for zookeeper
+zk_root_path: /data/zookeeper
+zk_version: 3.4.13

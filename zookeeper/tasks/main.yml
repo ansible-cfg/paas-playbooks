@@ -1,0 +1,30 @@
+---
+# tasks file for zookeeper
+- name: create zookeeper dirs
+  file: 
+    path: "{{ zk_root_path }}/{{ item}}"
+    state: directory
+    mode: 0755
+    recurse: yes
+  loop:
+    - data
+    - logs
+
+- name: 下载zookeeper
+  unarchive:
+    src: "{{ repo_address }}/{{ zk_version }}/zookeeper.tar.gz"
+    dest: "{{ zk_root_path}}"
+    remote_src: yes
+
+- name: add env to profile
+  blockinfile:
+    path: /etc/profile
+    block: |
+      export ZOOKEEPER_HOME={{ zk_root_path }}/zookeeper-{{ zk_version}}
+      export PATH=$ZOOKEEPER_HOME/bin:$PATH
+    marker: "# {mark} ANSIBLE MANAGED BLOCK jdk profile"
+  become: true
+- name: source profile
+  shell: source /etc/profile
+
+    
