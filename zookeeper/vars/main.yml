@@ -1,4 +1,5 @@
 ---
 # vars file for zookeeper
+repo_address: http://repo.paas.pub/packages
 zk_root_path: /data/zookeeper
 zk_version: 3.4.13
