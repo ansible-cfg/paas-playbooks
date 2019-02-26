@@ -12,7 +12,7 @@
 
 - name: 下载zookeeper
   unarchive:
-    src: "{{ repo_address }}/{{ zk_version }}/zookeeper.tar.gz"
+    src: "{{ repo_address }}/zookeeper/{{ zk_version }}/zookeeper.tar.gz"
     dest: "{{ zk_root_path}}"
     remote_src: yes
 
