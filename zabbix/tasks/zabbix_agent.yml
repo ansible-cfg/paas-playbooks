@@ -27,6 +27,10 @@
     dest: /usr/lib/systemd/system/zabbix-agentd.service
     mode: 0644
 
+- name: just force systemd to reread configs (2.4 and above)
+  systemd:
+    daemon_reload: yes
+
 - name: copy zabbi_agentd.conf
   template:
     src: zabbix_agentd.conf.j2
@@ -38,4 +42,5 @@
   systemd:
     name: zabbix-agentd
     state: started
+    enabled: yes
 
