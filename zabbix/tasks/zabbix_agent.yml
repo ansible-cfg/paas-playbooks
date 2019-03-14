@@ -21,6 +21,21 @@
     - ./configure --prefix=/usr/local/zabbix-3.2.0 --sysconfdir=/etc/zabbix_agentd --enable-agent
     - make
     - make install 
+- name: copy zabbix-agentd.service
+  template:
+    src: zabbix-agentd.service.j2
+    dest: /usr/lib/systemd/system/zabbix-agentd.service
+    mode: 0644
 
+- name: copy zabbi_agentd.conf
+  template:
+    src: zabbi_agentd.conf.j2
+    dest: /etc/zabbix_agentd/zabbix_agentd.conf
+    mode: 0644
+    force: yes
 
+- name: 启动zabbix_agentd
+  systemd:
+    name: zabbix-agentd
+    state: started
 

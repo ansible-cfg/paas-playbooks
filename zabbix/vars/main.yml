@@ -2,3 +2,4 @@
 # vars file for zabbix
 repo_address: http://repo.paas.pub/packages
 zabbix_version: 3.2.0
+zabbix_log_path: /var/log/zabbix
