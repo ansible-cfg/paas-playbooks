@@ -12,5 +12,5 @@ redis_type: "{{ type }}"
 redis_version: 4.0.13
 cluster_port:
   - 7000
-maxmemory: 1g
+maxmemory: 1
 ruby_version: 2.4.3 
