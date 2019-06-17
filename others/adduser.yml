@@ -1,0 +1,22 @@
+---
+- hosts: "{{host}}"
+  become: true
+  vars_prompt:
+    - name: 'pwd'
+      prompt: 'Enter Your Password'
+      private: yes
+      encrypt: "sha512_crypt"
+      confirm: yes
+      salt_size: 7
+  tasks: 
+    - name: Create User
+      user:
+        name: '{{ user }}'
+        password: '{{ pwd }}'
+    - name: add env to profile
+      blockinfile:
+        path: /etc/sudoers
+        block: |
+          {{ user }} ALL=(ALL)    NOPASSWD:ALL                
+        marker: "# {mark} ANSIBLE MANAGED BLOCK ADD USER {{user}}"
+      become: true

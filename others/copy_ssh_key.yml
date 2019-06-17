@@ -1,0 +1,9 @@
+---
+- hosts: "{{host}}" 
+  remote_user: "{{ user }}"
+  tasks:
+    - name: push ssh key to user
+      authorized_key:
+        user: "{{ user }}" 
+        state: present
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub')}}"

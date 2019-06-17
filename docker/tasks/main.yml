@@ -19,15 +19,24 @@
 
 - name: 创建docker 数据目录
   file:
-    path: /data/docker-data
+    path: "{{ item }}"
     state: directory
     mode: 0755
+  loop:
+    - /data/docker-data
+    - /etc/docker
 
 - name:  修改 docker 路径
   lineinfile:
     path: /lib/systemd/system/docker.service
     regexp: '^ExecStart='
     line: 'ExecStart=/usr/bin/dockerd --graph=/data/docker-data'
+
+- name: 修改daemon.json
+  template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+
 
 - name: force systemd to reread configs
   systemd:
