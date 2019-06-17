@@ -1,0 +1,4 @@
+---
+# tasks file for redis
+- import_tasks: optimizing.yml
+- import_tasks: redis.yml

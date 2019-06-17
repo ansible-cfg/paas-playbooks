@@ -1,0 +1,58 @@
+---
+# tasks file for keepalived
+- name: install basic pkg
+  yum:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - libnl       
+    - libnl-devel
+    - libnfnetlink-devel
+    - popt-devel
+    - gcc
+    - make 
+    - ipvsadm
+
+
+- name: create dirs
+  file:
+    path: "/data/{{ item }}"
+    state: directory
+    mode: 0755
+    recurse: yes
+  loop:
+    - packages
+    - scripts
+
+- name: copy package
+  unarchive:
+    src: '{{ repo_address }}/keepalived/{{ item.version }}/{{ item.package_name }}'
+    dest: /data/packages
+    remote_src: yes
+  loop:
+    - { version: "{{ keepalived_version }}", package_name: keepalived.tar.gz}
+
+- name: 编译安装
+  shell: ./configure --prefix={{ keepalived_root_path }}/keepalived \
+         && make && make install
+  args:
+    chdir: "/data/packages/keepalived-{{ keepalived_version }}"
+
+- name: copy keepalived binary to /usr/sbin
+  copy:
+    src: "{{ keepalived_root_path }}/keepalived/sbin/keepalived"
+    dest: /usr/sbin/keepalived
+    mode: 0755
+    remote_src: yes
+    
+
+- name: copy config file to /etc 
+  shell: "cp -r {{ item.src }} {{ item.dest }}"
+  loop:
+    - { src: "{{ keepalived_root_path }}/keepalived/etc/keepalived", dest: "/etc/"}
+    - { src: "{{ keepalived_root_path }}/keepalived/etc/sysconfig/keepalived", dest: "/etc/sysconfig/"}
+    - { src: "/data/packages/keepalived-{{ keepalived_version }}/keepalived/etc/init.d/keepalived", dest: "/etc/rc.d/init.d/"}
+  tags:
+    - config
+
+

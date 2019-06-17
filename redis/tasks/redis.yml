@@ -1,0 +1,99 @@
+---
+- name: 拷贝redis安装包并解压
+  unarchive:
+    src: "{{ repo_address }}/{{ item.name }}/{{ item.version }}/{{ item.pkg}}"
+    dest: /data/packages
+    remote_src: yes
+  loop:
+    - {'name': redis, 'version': '{{ redis_version }}', 'pkg': redis.tar.gz }
+    - {'name': ruby, 'version': '{{ ruby_version }}', 'pkg': ruby.tar.gz}
+
+- name: 编译安装redis
+  make:  
+    chdir: /data/packages/redis-{{ redis_version }}
+    target: install
+    params:
+      PREFIX: "{{ redis_root_path }}"
+
+- name: 拷贝/data/packages/redis-version/src/redis-trib.rb 文件
+  copy:
+    src: /data/packages/redis-{{ redis_version }}/src/redis-trib.rb
+    dest: "{{ redis_root_path }}/bin/redis-trib.rb"
+    remote_src: yes
+    mode: 0755
+- name: 编译ruby
+  shell: ./configure && make && make install 
+  args:
+    chdir: /data/packages/ruby-{{ ruby_version }}
+  when: redis_type == 'cluster'
+
+  #- name: 编译安装ruby
+  #  make:
+  #    chdir: /data/packages/ruby-{{ ruby_version }}
+  #    target: install
+  #  when: redis_type == 'cluster'
+
+- name: 添加环境变量
+  blockinfile:
+    path: /etc/profile
+    block: |
+      export PATH={{ redis_root_path }}/bin:/usr/local/bin:$PATH
+    marker: "# {mark} ANSIBLE MANAGED BLOCK ADD REDIS ENV"
+  become: true
+
+- name: gem install redis
+  shell: /usr/local/bin/gem install redis
+  when: redis_type == 'cluster'
+
+- name: 生成redis 配置文件
+  template:
+    src: redis-{{ redis_type }}.j2
+    dest: "{{ redis_root_path }}/{{ redis_config_path[redis_type] }}/{{ item }}/redis.conf"
+    mode: 0644
+  vars:
+    redis_port: "{{ item }}"
+  loop: "{{ cluster_port | default ([]) }}"
+
+- name: 查看gem路径
+  shell: /usr/local/bin/gem environment gemdir
+  register: result
+  when: redis_type == 'cluster'
+
+- name: ruby redis 版本
+  shell: /usr/local/bin/gem list  |grep redis | awk '{print $2}' |sed 's/(//'|sed 's/)//'
+  register: ruby_redis
+
+  when: redis_type == 'cluster'
+ 
+
+- name: 修改ruby redis库 密码
+  lineinfile:
+    path: "{{result.stdout}}/gems/redis-{{ruby_redis.stdout}}/lib/redis/client.rb"
+    regexp: ':password => nil'
+    line: '      :password => "{{redis_password}}", '
+  when: redis_type == 'cluster'
+
+  #- name: generate redis service
+  #  template:
+  #    src: redis.service.j2
+  #    dest: "/usr/lib/systemd/system/redis-server-{{ item }}.service"
+  #  vars:
+  #    redis_port: "{{ item }}"
+  #  loop: "{{ redis_port | default ([]) }}"
+  #  tags:
+  #    - redis
+  #  
+
+- name: 启动redis
+  shell: "{{ redis_root_path }}/bin/redis-server {{ redis_root_path }}/{{ redis_config_path[redis_type] }}/{{item}}/redis.conf"
+  loop: "{{cluster_port | default ([])}}"
+
+  #- name: test
+  #  debug:
+  #    msg: "/data/redis/bin/redis-trib.rb create --replicas 1 {{ips_li | join('')}}"
+  #  when: inventory_hostname == "{{ groups['all'][0] }}"
+  #  tags: create-cluster
+  #- name: DEBUG ruby redis库 路径
+  #  debug:
+  #    msg: "{{result.stdout}}/gems/redis-{{ruby_redis.stdout}}/lib/redis"
+  #  when: redis_type == 'cluster'

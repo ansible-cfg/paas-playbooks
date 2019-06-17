@@ -1,0 +1,16 @@
+---
+# vars file for redis
+#
+repo_address: http://repo.paas.pub/packages
+redis_root_path: /data/redis
+
+redis_config_path:
+  standlone: conf
+  sentinel: conf
+  cluster: redis-cluster
+redis_type: "{{ type }}"
+redis_version: 4.0.13
+cluster_port:
+  - 7000
+maxmemory: 1
+ruby_version: 2.4.3 

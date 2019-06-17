@@ -1,0 +1,9 @@
+tickTime=2000
+initLimit=10
+syncLimit=5
+dataDir={{ zk_root_path }}/data
+dataLogDir={{ zk_root_path }}/logs
+clientPort=2181
+server.1={{ zk_servers["server1"]["ip"] }}:2888:3888
+server.2={{ zk_servers["server2"]["ip"] }}:2888:3888
+server.3={{ zk_servers["server3"]["ip"] }}:2888:3888
