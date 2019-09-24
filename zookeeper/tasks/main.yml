@@ -38,9 +38,20 @@
     src: myid.j2
     dest: "{{ zk_root_path }}/data/myid"
     mode: 0644
+- name: copy systemd
+  template:
+    src: zookeeper.service.j2
+    dest: /usr/lib/systemd/system/zookeeper.service
 
-- name: start zk
-  shell: "{{ zk_root_path }}/zookeeper-{{ zk_version}}/bin/zkServer.sh start"
-  args:
-    chdir: "{{ zk_root_path }}/zookeeper-{{ zk_version}}/bin/"
+- name: systemd reread
+  systemd:
+    daemon_reload: yes
+
+
+- name: system zookeeper start
+  systemd:
+    state: started
+    name: zookeeper
+    enabled: yes
+
 
