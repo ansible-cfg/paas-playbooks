@@ -1,2 +1,8 @@
 ---
 # vars file for docker
+docker-data-path: /data/docker-data
+pkgs:
+  - yum-utils
+  - device-mapper-persistent-data
+  - lvm2
+  - docker-ce
