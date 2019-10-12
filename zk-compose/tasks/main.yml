@@ -11,5 +11,5 @@
 - name: generate docker-compose  
   template:
     src: docker-compose.yaml.j2
-    dest: "{{ docker_compose_path }}"
+    dest: "{{ docker_compose_path }}/docker-compose.yaml"
     mode: 0755

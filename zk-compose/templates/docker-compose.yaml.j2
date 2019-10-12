@@ -11,7 +11,6 @@ services:
     network_mode: host
     environment:
       ZOO_MY_ID: {% for item in zk_nodes %} {% if item.ip == ansible_default_ipv4.address %}  {{ item.zoo_my_id }} {% endif %} {% endfor %}
-      ZOO_SERVERS: server.1=zk1:2888:3888 server.2=zk2:2888:3888 server.3=zk3:2888:3888
       ZOO_SERVERS: {% for item in zk_nodes %}server.{{ item.zoo_my_id }}={{ item.ip }}:2888:3888  {% endfor %} 
     volumes:
       - "{{ zk_config_path }}:/conf/zoo.cfg"
