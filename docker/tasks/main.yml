@@ -15,12 +15,10 @@
 
 - name: 创建docker 数据目录
   file:
-    path: "{{ item }}"
+    path: "{{ item.value }}"
     state: directory
     mode: 0755
-  loop:
-    - "{{ docker-data-path }}"
-    - /etc/docker
+  loop: "{{ directorys }}"
 
 - name:  修改 docker 路径
   lineinfile:

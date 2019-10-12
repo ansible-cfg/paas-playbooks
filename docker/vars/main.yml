@@ -1,6 +1,11 @@
 ---
 # vars file for docker
-docker-data-path: /data/docker-data
+directorys:
+  - name: docker-data-path
+    value: /data/docker-data
+  - name: docker-daemon-path
+    value: /etc/docker
+
 pkgs:
   - yum-utils
   - device-mapper-persistent-data
