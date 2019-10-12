@@ -2,7 +2,7 @@
 # tasks file for jdk
 - name: copy jdk
   unarchive:
-    src: "{{ repo_address }}/{{ jdk_version }}/jdk.tar.gz"
+    src: "{{ repo_address }}/jdk/{{ jdk_version }}/jdk.tar.gz"
     dest: /usr/local/
     remote_src: yes
   become: true
