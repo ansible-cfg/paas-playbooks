@@ -1,5 +1,17 @@
 ---
 # tasks file for zk-compose
+- name: install python-pip
+  yum:
+   name: "{{ item }}"
+  loop:
+    - python-pip
+
+- name: install docker-compose
+  pip:
+    name: "{{ item }}"
+  loop:
+    - docker-compose
+
 - name: create directory
   file:
     path: "{{ item.path }}"
