@@ -1,0 +1,16 @@
+version: '2'
+services:
+  zk:
+    image: zookeeper
+    restart: always
+    {% for item in zk_nodes %} 
+    {% if item.ip == ansible_default_ipv4.address %}
+    container_name: {{ item.name }}
+    {% endfor %}
+    container_name: zk1
+    network_mode: host
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=zk1:2888:3888 server.2=zk2:2888:3888 server.3=zk3:2888:3888
+      ZOO_SERVERS: {% for item in zk_nodes %}server.{{item.zoo_my_id}}={{item.ip}}:2888:3888  {% endfor %} 
+

@@ -1,0 +1,12 @@
+---
+# vars file for zk-compose
+zk_nodes:
+  - name: zk01
+    ip: 10.120.128.31
+    zoo_my_id: 1
+  - name: zk02
+    ip: 10.120.128.114
+    zoo_my_id: 2
+  - name: zk03
+    ip: 10.120.128.97
+    zoo_my_id: 3
