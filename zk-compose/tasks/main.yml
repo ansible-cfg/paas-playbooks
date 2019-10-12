@@ -1,2 +1,15 @@
 ---
 # tasks file for zk-compose
+- name: create directory
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    mode: 0755
+    recurse: yes
+  loop: "{{ directorys }}"
+
+- name: generate docker-compose  
+  template:
+    src: docker-compose.yaml.j2
+    dest: "{{ docker_compose_path }}"
+    mode: 0755

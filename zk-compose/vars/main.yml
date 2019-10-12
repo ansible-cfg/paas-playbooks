@@ -10,3 +10,19 @@ zk_nodes:
   - name: zk03
     ip: 10.120.128.97
     zoo_my_id: 3
+
+docker_compose_path: /data/zookeeper/zk-compose    
+zk_config_path: "{{ docker_compose_path }}/conf"
+zk_data_path: /data/zookeeper/data
+zk_datalog_path: /data/zookeeper/datalog
+directorys:
+  - name: zk_data
+    path: "{{ zk_data_path }}"
+  - name: zk_datalog
+    path: "{{ zk_datalog_path }}"
+  - name: zk_config_path
+    path: "{{ zk_config_path }}"
+  - name: compose_path
+    path: "{{ docker_compose_path }}"
+
+
