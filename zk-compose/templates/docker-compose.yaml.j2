@@ -7,7 +7,7 @@ services:
     {% if item.ip == ansible_default_ipv4.address -%}
     container_name: {{ item.name }}
     {%- endif %}
-    {% endfor %}
+    {% endfor %} 
     network_mode: host
     environment:
       ZOO_MY_ID: {% for item in zk_nodes %} {% if item.ip == ansible_default_ipv4.address %}  {{ item.zoo_my_id }} {% endif %} {% endfor %} 
