@@ -25,3 +25,10 @@
     src: docker-compose.yaml.j2
     dest: "{{ docker_compose_path }}/docker-compose.yaml"
     mode: 0755
+- name: docker-compose up -d
+  shell: |
+    docker-compose up -d
+  args:
+    chdir: "{{ docker_compose_path }}"
+
+    
