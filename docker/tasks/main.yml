@@ -19,7 +19,7 @@
     state: directory
     mode: 0755
   loop:
-    - {{ docker-data-path }}
+    - "{{ docker-data-path }}"
     - /etc/docker
 
 - name:  修改 docker 路径
