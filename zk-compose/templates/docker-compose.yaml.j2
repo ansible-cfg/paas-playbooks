@@ -10,8 +10,8 @@ services:
     {%- endfor %} 
     network_mode: host
     environment:
-      ZOO_MY_ID: {% for item in zk_nodes %} {%- if item.ip == ansible_default_ipv4.address -%}  {{ item.zoo_my_id }} {%- endif %} {% endfor %} 
-      ZOO_SERVERS: {% for item in zk_nodes %}{%- if item.ip == ansible_default_ipv4.address -%} server.{{ item.zoo_my_id }}=0.0.0.0:2888:3888;2181 {% else %} server.{{ item.zoo_my_id }}={{ item.ip }}:2888:3888;2181 {%- endif %} {% endfor %} 
+      ZOO_MY_ID: {% for item in zk_nodes -%} {%- if item.ip == ansible_default_ipv4.address -%}  {{ item.zoo_my_id }} {%- endif %} {%- endfor %} 
+      ZOO_SERVERS: {% for item in zk_nodes -%}{%- if item.ip == ansible_default_ipv4.address -%} server.{{ item.zoo_my_id }}=0.0.0.0:2888:3888;2181 {% else %} server.{{ item.zoo_my_id }}={{ item.ip }}:2888:3888;2181 {%- endif %} {%- endfor %} 
     volumes:
       - "{{ zk_datalog_path }}:/datalog"
       - "{{ zk_data_path }}:/data"
