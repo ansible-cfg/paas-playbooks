@@ -4,9 +4,9 @@ services:
     image: zookeeper
     restart: always
     {% for item in zk_nodes %} 
-    {% if item.ip == ansible_default_ipv4.address %}
+    {% if item.ip == ansible_default_ipv4.address -%}
     container_name: {{ item.name }}
-    {% endif %}
+    {%- endif %}
     {% endfor %}
     network_mode: host
     environment:
