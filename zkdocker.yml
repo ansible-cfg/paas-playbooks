@@ -3,7 +3,6 @@
   become: true
   gather_facts: true
   roles:
-    - jdk
-    - zookeeper
+    - zk-compose
   environment:
     PATH: /usr/local/bin:{{ ansible_env.PATH }}
