@@ -1,9 +1,9 @@
 ---
 # vars file for docker
-docker-data-path: /data/docker-data
+docker_data_path: /data/docker-data
 directorys:
   - name: docker-data-path
-    value: "{{ docker-data-path }}" 
+    value: "{{ docker_data_path }}" 
   - name: docker-daemon-path
     value: /etc/docker
 
