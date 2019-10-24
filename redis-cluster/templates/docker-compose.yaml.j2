@@ -6,7 +6,7 @@ services:
     restart: always
     network_mode: "host"
     volumes:
-      - ./conf/7000/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./conf/{{ redis_port }}/redis.conf:/usr/local/etc/redis/redis.conf
       - {{ redis_root_path }}/redis-data/{{ redis_port }}:{{redis_root_path }}/redis-data/{{ redis_port }}
     command: redis-server /usr/local/etc/redis/redis.conf
 
