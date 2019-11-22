@@ -14,6 +14,21 @@
     group: root
     mode: 0644
 
+
+- name: pam_limits hard
+  pam_limits:
+    domain: '*'
+    limit_type: hard
+    limit_item: nofile
+    value: 65535
+
+- name: pam_limits soft
+  pam_limits:
+    domain: '*'
+    limit_type: soft
+    limit_item: nofile
+    value: 65535
+
 - name: 安装yum-priorities ntp
   yum: 
     name: '{{item}}' 
