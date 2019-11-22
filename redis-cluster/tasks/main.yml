@@ -1,0 +1,31 @@
+---
+# tasks file for redis-cluster
+- name: create directorys
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+    recurse: yes
+  with_items:
+    - "{{ redis_root_path }}/redis-data/{{ redis_port }}"
+    - "{{ redis_root_path }}/redis-compose/conf/{{ redis_port }}"
+
+- name: generate docker-compose.yml
+  template:
+    src: "{{ item.name }}"
+    dest: "{{ item.value}}" 
+  with_items:
+    - { "name": "docker-compose.yaml.j2", "value": "{{ redis_root_path }}/redis-compose/docker-compose-{{ redis_port }}.yaml" }
+    - { "name": "redis.conf.j2", "value": "{{ redis_root_path }}/redis-compose/conf/{{ redis_port}}/redis.conf"}
+
+  tags:
+    - conf      
+
+- name: docker-compose up -d
+  shell: "docker-compose -f docker-compose-{{ redis_port }}.yaml up -d" 
+  args:
+    chdir: "{{ redis_root_path }}/redis-compose/"
+  tags:
+    - up
+
+

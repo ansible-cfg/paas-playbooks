@@ -1,0 +1,6 @@
+---
+# vars file for keepalived
+repo_address: http://repo.paas.pub/packages
+keepalived_root_path: /usr/local
+
+keepalived_version: 2.0.15

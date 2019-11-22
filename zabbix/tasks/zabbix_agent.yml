@@ -1,0 +1,46 @@
+---
+# tasks file for zabbix
+- name: 拷贝redis安装包并解压
+  unarchive:
+    src: "{{ repo_address }}/{{ item.name }}/{{ item.version }}/{{ item.pkg}}"
+    dest: /data/packages
+    remote_src: yes
+  loop:
+    - {'name': zabbix, 'version': '{{ zabbix_version }}', 'pkg': zabbix.tar.gz }
+
+- name: 创建zabbix 用户
+  user:
+    name: zabbix
+    createhome: no
+
+- name: 编译 
+  shell: "{{ item }}"
+  args:
+    chdir: "/data/packages/zabbix-{{ zabbix_version }}"
+  loop:
+    - ./configure --prefix=/usr/local/zabbix-3.2.0 --sysconfdir=/etc/zabbix_agentd --enable-agent
+    - make
+    - make install 
+- name: copy zabbix-agentd.service
+  template:
+    src: zabbix-agentd.service.j2
+    dest: /usr/lib/systemd/system/zabbix-agentd.service
+    mode: 0644
+
+- name: just force systemd to reread configs (2.4 and above)
+  systemd:
+    daemon_reload: yes
+
+- name: copy zabbi_agentd.conf
+  template:
+    src: zabbix_agentd.conf.j2
+    dest: /etc/zabbix_agentd/zabbix_agentd.conf
+    mode: 0644
+    force: yes
+
+- name: 启动zabbix_agentd
+  systemd:
+    name: zabbix-agentd
+    state: started
+    enabled: yes
+

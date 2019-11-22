@@ -11,23 +11,26 @@
     name: '{{ packages }}'
     state: latest
   vars:
-    packages:
-      - yum-utils
-      - device-mapper-persistent-data
-      - lvm2
-      - docker-ce
+    packages: "{{ pkgs }}"
 
 - name: 创建docker 数据目录
   file:
-    path: /data/docker-data
+    path: "{{ item.value }}"
     state: directory
     mode: 0755
+  loop: "{{ directorys }}"
 
 - name:  修改 docker 路径
   lineinfile:
     path: /lib/systemd/system/docker.service
     regexp: '^ExecStart='
-    line: 'ExecStart=/usr/bin/dockerd --graph=/data/docker-data'
+    line: 'ExecStart=/usr/bin/dockerd --data-root={{ docker_data_path }}'
+
+- name: 修改daemon.json
+  template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+
 
 - name: force systemd to reread configs
   systemd:

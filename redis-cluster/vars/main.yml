@@ -1,0 +1,6 @@
+---
+# vars file for redis-cluster
+redis_port: 6379
+redis_password: eYFTR89R
+redis_root_path: /data/redis
+maxmemory: 10

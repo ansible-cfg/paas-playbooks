@@ -1,0 +1,12 @@
+version: "3"
+services:
+  redis-{{ redis_port }}:
+    container_name: redis-{{ redis_port }}
+    image: redis:5.0.5-alpine
+    restart: always
+    network_mode: "host"
+    volumes:
+      - ./conf/{{ redis_port }}/redis.conf:/usr/local/etc/redis/redis.conf
+      - {{ redis_root_path }}/redis-data/{{ redis_port }}:{{redis_root_path }}/redis-data/{{ redis_port }}
+    command: redis-server /usr/local/etc/redis/redis.conf
+

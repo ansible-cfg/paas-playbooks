@@ -1,0 +1,13 @@
+[Unit]
+Description=zookeeper.service
+After=network.target
+
+[Service]
+Type=forking
+Environment=JAVA_HOME=/usr/local/jdk
+ExecStart={{ zk_root_path }}/zookeeper-{{ zk_version}}/bin/zkServer.sh start
+ExecStop={{ zk_root_path }}/zookeeper-{{ zk_version}}/bin/zkServer.sh stop
+ExecReload={{ zk_root_path }}/zookeeper-{{ zk_version}}/bin/zkServer.sh restart
+[Install]
+
+WantedBy=multi-user.target

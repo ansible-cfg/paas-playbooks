@@ -1,0 +1,88 @@
+---
+# tasks file for openresty
+- name: 安装openresty 依赖包
+  yum:
+    name: '{{ item }}'
+    state: present
+  loop:
+    - pcre-devel
+    - openssl-devel
+    - gcc
+    - curl
+    - git
+
+- name: create basic directory
+  file:
+    path: "{{ openresty_root_path }}/{{ item }}"
+    state: directory
+    mode: 0755
+    recurse: yes
+  loop:
+    - packages
+    - scripts
+- name: copy package
+  unarchive:
+    src: '{{ repo_address }}/openresty/{{ item.version }}/{{ item.package_name }}'
+    dest: /data/packages
+    remote_src: yes
+  loop:
+    - { version: "{{ openresty_version }}", package_name: openresty.tar.gz}
+
+- name: git clone git://github.com/vozlt/nginx-module-vts.git
+  git:
+    repo: "{{ item.repo}}"
+    dest: "/usr/local/{{ item.path}}"
+  loop:
+    - {path: "nginx-module-sts", repo: "git://github.com/vozlt/nginx-module-sts.git" }
+    - {path: "nginx-module-stream-sts", repo: "git://github.com/vozlt/nginx-module-stream-sts.git" }
+    - {path: "nginx-module-vts", repo: "git://github.com/vozlt/nginx-module-vts.git" }
+
+
+- name: 编译安装openresty
+  shell: ./configure --prefix={{ openresty_root_path }}/openresty \
+         --with-luajit \
+         --with-http_realip_module \
+         --with-http_stub_status_module \
+         --with-http_gzip_static_module \
+         --with-http_gunzip_module \
+         --with-stream \
+         --with-stream_realip_module \
+         --with-stream_ssl_module \
+         --with-stream_ssl_preread_module \
+         --add-module=/usr/local/nginx-module-vts \
+         --add-module=/usr/local/nginx-module-sts \
+         --add-module=/usr/local/nginx-module-stream-sts \
+         && make && make install
+  args:
+    chdir: "/data/packages/openresty-{{ openresty_version }}"
+
+- name: copy systemd
+  template:
+    src: nginx.service.j2
+    dest: /usr/lib/systemd/system/nginx.service
+  tags:
+    - systemd
+
+- name: systemd reread
+  systemd:
+    daemon_reload: yes
+
+- name: system nginx start
+  systemd:
+    state: started
+    name: nginx 
+    enabled: yes
+
+- name: copy 切割nginx日志脚本
+  template:
+    src: nginx_log_cut.sh.j2 
+    dest: /data/scripts/nginx_log_cut.sh
+    mode: 0755
+
+- name: nginx 日志定时分割
+  cron:
+    name: 'schedule cut nginx log'
+    minute: '0'
+    hour: '0'
+    job: '/bin/bash /data/scripts/nginx_log_cut.sh >/dev/null 2>&1'
+

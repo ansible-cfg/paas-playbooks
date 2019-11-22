@@ -1,0 +1,7 @@
+[Unit]
+Description=Reddis In-Memory Data Store
+After=network.target
+
+[Service]
+Type=forking
+ExecStart={{ redis_root_path }}/bin/redis-server 

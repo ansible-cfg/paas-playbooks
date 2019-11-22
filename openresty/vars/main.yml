@@ -1,0 +1,7 @@
+---
+# vars file for openresty
+repo_address: http://repo.paas.pub/packages
+openresty_root_path: /data
+
+openresty_version: 1.13.6.2
+

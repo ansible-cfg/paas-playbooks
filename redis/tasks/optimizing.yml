@@ -1,0 +1,49 @@
+--- 
+- name: 系统优化
+  sysctl: 
+    name: net.netfilter.nf_conntrack_max 
+    state: absent 
+    sysctl_file: /etc/sysctl.conf 
+    reload: yes
+
+- name: 优化sysctl
+  sysctl:
+    name: "{{item.name}}"
+    value: "{{item.value}}"
+    sysctl_file: /etc/sysctl.conf
+    reload: yes
+  loop:
+    - { name: "vm.swappiness", value: 1 }
+    - { name: "vm.overcommit_memory", value: 1 } 
+
+- name: 优化tcp backlog值为511
+  shell: echo '511' > /proc/sys/net/core/somaxconn
+
+
+- name: create basic directory
+  file:
+    path: "/data/{{ item }}"
+    state: directory
+    mode: 0755
+    recurse: yes
+  loop:
+    - packages
+    - scripts
+
+- name: create redis config directory
+  file:
+    path: "{{ redis_root_path }}/{{ redis_config_path[redis_type] }}/{{ item }}"
+    state: directory
+    mode: 0755
+    recurse: yes
+  loop: "{{ cluster_port |default ([]) }}"
+
+
+- name: create redis data directory
+  file:
+    path: "{{ redis_root_path }}/redisdata/{{ item }}"
+    state: directory
+    mode: 0755
+    recurse: yes
+  loop: "{{ cluster_port |default ([]) }}"
+  when: redis_type == 'cluster'
