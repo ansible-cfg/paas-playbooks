@@ -1,6 +1,6 @@
 ---
 # vars file for k8s
-repo_address: http://repo.galaxy.test
+repo_address: http://172.16.26.1:88
 # generate ssl key
 gen_ssl_path: /data/ssl
 project_config_path: /etc/kubernetes
@@ -8,25 +8,25 @@ project_bin_path: /usr/local/bin
 
 # etcd vars
 etcd_cluster_data_dir: /data/etcd-data
-etcd_version: v3.2.18
+etcd_version: v3.3.21
 etcd_hosts:
   - name: etcd01
-    ip: 10.10.152.39
+    ip: 172.16.26.156
   - name: etcd02
-    ip: 10.10.149.224
+    ip: 172.16.26.157
   - name: etcd03
-    ip: 10.10.39.45
+    ip: 172.16.26.158
 # 
-KUBE_APISERVER: 10.10.215.69
-network: 172.18.0.0/16
+KUBE_APISERVER: 172.16.26.156
+network: 172.68.0.0/16
 DNS_SERVER_IP: 10.254.0.2
 kube_api_cluster_service_ip: 10.254.0.1
 service_cluster_ip_range: 10.254.0.0/16
 NODE_ADDRESS: "{{ ansible_default_ipv4.address }}"
 BOOTSTRAP_TOKEN: 0f7b180f3712121979fb8a5981cde7a2
-k8s_version: v1.13.0 
+k8s_version: v1.18.2
 
 # flannel
-flannel_version: v0.10.0
+flannel_version: v0.12.0
 
-infra_container_image: registry.cn-hangzhou.aliyuncs.com/google-containers/pause-amd64:3.0 
+infra_container_image: registry.cn-hangzhou.aliyuncs.com/google-containers/pause-amd64:3.2

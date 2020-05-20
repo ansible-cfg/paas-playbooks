@@ -1,10 +1,18 @@
 ---
 # tasks file for docker
+- name: yum install
+  yum:
+    name: yum-utils
+    state: latest
+
 - name: Add repository
-  get_url:
-    url: https://download.docker.com/linux/centos/docker-ce.repo
-    dest: /etc/yum.repos.d/docker-ce.repo
-    mode: 0644
+  yum_repository:
+    name: docker-ce
+    description: docker-ce
+    baseurl: https://download.docker.com/linux/centos/7/$basearch/stable
+    enabled: 1
+    gpgcheck: 1
+    gpgkey: https://download.docker.com/linux/centos/gpg
 
 - name: yum install
   yum:

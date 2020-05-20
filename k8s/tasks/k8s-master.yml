@@ -155,11 +155,33 @@
   tags:
     - k8s-master
     - k8s-master-zrq
-
 - name:  开启bootstrapper认证
-  shell: "{{ project_bin_path }}/kubectl create clusterrolebinding kubelet-bootstrap --clusterrole=system:node-bootstrapper --user=kubelet-bootstrap"
-  args:
-    chdir: "{{ project_bin_path }}"     
+  shell: |
+    {{ project_bin_path }}/kubectl create clusterrolebinding kubelet-bootstrap --clusterrole=system:node-bootstrapper --user=kubelet-bootstrap
+  environment:
+    KUBERNETES_MASTER: 127.0.0.1:8080
   when: ansible_ssh_host == KUBE_APISERVER
   tags:
     - k8s-master
+    
+- name: check k8s componentstatuses
+  shell: |
+    {{ project_bin_path }}/kubectl get componentstatuses
+  args:
+    chdir: "{{ project_bin_path }}"
+  when: ansible_ssh_host == KUBE_APISERVER
+  register: componentstatuses_result
+  environment:
+    KUBERNETES_MASTER: 127.0.0.1:8080
+  tags:
+    - k8s-master
+
+- name: print componentstatuses
+  debug: 
+    var: componentstatuses_result
+    verbosity: 2
+  when: ansible_ssh_host == KUBE_APISERVER
+  tags:
+    - k8s-master
+
+      

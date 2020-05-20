@@ -46,6 +46,8 @@
     dest: "{{ project_config_path }}/cfg/{{item}}"
     mode: 0644
   loop:
+    - KubeletConfiguration.yaml
+    - KubeProxyConfiguration.yaml
     - kubelet
     - kube-proxy
   when: ansible_ssh_host != KUBE_APISERVER

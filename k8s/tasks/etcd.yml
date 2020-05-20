@@ -5,7 +5,7 @@
     - zrq-etcd
 - name: create ssl directory
   file:
-    path: "{{ item }}"
+    path: "{{ item }}" 
     state: directory
     mode: 0755
     recurse: yes
@@ -29,15 +29,15 @@
     - etcd
     - zrq-etcd
 
-- name: copy etcd config
-  template:
-    src: etcd.j2
-    dest: "{{ project_config_path }}/cfg/etcd"
-    mode: 0644
-  tags:
-    - etcd
-    - zrq-j2
-
+      #- name: copy etcd config
+      #  template:
+      #    src: etcd.j2
+      #    dest: "{{ project_config_path }}/cfg/etcd"
+      #    mode: 0644
+      #  tags:
+      #    - etcd
+      #    - zrq-j2
+      #
 - name: copy etcd service 
   template:
     src: etcd.service.j2
@@ -89,8 +89,8 @@
   blockinfile: 
     path: /root/.bashrc
     block: | 
-      alias etcdctl='etcdctl --ca-file={{ project_config_path }}/ssl/ca.pem --key-file={{ project_config_path }}/ssl/server-key.pem --cert-file={{ project_config_path }}/ssl/server.pem'
-    marker: "#add etcdctl to bashrc"
+      alias etcdctl='etcdctl --endpoints={% for item in etcd_hosts %}https://{{ item.ip }}:2379{% if not loop.last %},{% endif %}{% endfor %} --ca-file={{ project_config_path }}/ssl/ca.pem --key-file={{ project_config_path }}/ssl/server-key.pem --cert-file={{ project_config_path }}/ssl/server.pem'
+    marker: "#{mark} add etcdctl to bashrc"
   tags:
     - etcd
   

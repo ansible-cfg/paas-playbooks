@@ -158,3 +158,4 @@ ansible-playbook -i k8s.yaml -e 'host=k8s' -u user -become --tags 'k8s-node' -v
 ```
 
 
+## * 注意不支持etcd 3.4及其以上的版本

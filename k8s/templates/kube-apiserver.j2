@@ -8,7 +8,7 @@ KUBE_APISERVER_OPTS="--logtostderr=true \
 --advertise-address={{ KUBE_APISERVER }} \
 --allow-privileged=true \
 --service-cluster-ip-range={{ service_cluster_ip_range }} \
---admission-control=NamespaceLifecycle,LimitRanger,SecurityContextDeny,ServiceAccount,ResourceQuota,NodeRestriction \
+--enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,DefaultTolerationSeconds,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,ResourceQuota,NodeRestriction \
 --authorization-mode=RBAC,Node \
 --kubelet-https=true \
 --enable-bootstrap-token-auth \

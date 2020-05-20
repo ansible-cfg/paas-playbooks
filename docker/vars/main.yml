@@ -9,6 +9,6 @@ directorys:
 
 pkgs:
   - yum-utils
-  - device-mapper-persistent-data
-  - lvm2
   - docker-ce
+  - docker-ce-cli
+  - containerd.io
